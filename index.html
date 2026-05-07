@@ -455,12 +455,23 @@
 
     @media (prefers-reduced-motion: reduce) {
       .care-slide,
-      .care-dots span {
+      .care-dots span,
+      .review-track {
         animation: none;
       }
 
       .care-slide:first-child {
         opacity: 1;
+      }
+
+      .review-marquee {
+        overflow-x: auto;
+        mask-image: none;
+      }
+
+      .review-marquee::before,
+      .review-marquee::after {
+        display: none;
       }
     }
 
@@ -618,14 +629,50 @@
       line-height: 1.75;
     }
 
-    .reviews {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+    .review-marquee {
+      position: relative;
+      overflow: hidden;
+      padding: 4px 0;
+      mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+    }
+
+    .review-marquee::before,
+    .review-marquee::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      z-index: 2;
+      width: 90px;
+      pointer-events: none;
+    }
+
+    .review-marquee::before {
+      left: 0;
+      background: linear-gradient(90deg, var(--paper), rgba(255, 250, 243, 0));
+    }
+
+    .review-marquee::after {
+      right: 0;
+      background: linear-gradient(270deg, var(--paper), rgba(255, 250, 243, 0));
+    }
+
+    .review-track {
+      width: max-content;
+      display: flex;
       gap: 18px;
+      animation: reviewScroll 42s linear infinite;
+    }
+
+    .review-marquee:hover .review-track {
+      animation-play-state: paused;
     }
 
     .review-card {
+      width: 360px;
+      min-height: 238px;
       padding: 24px;
+      flex: 0 0 auto;
     }
 
     .stars {
@@ -651,6 +698,23 @@
       height: 44px;
       border-radius: 50%;
       object-fit: cover;
+    }
+
+    .reviewer small {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    @keyframes reviewScroll {
+      from {
+        transform: translateX(0);
+      }
+
+      to {
+        transform: translateX(calc(-50% - 9px));
+      }
     }
 
     .booking {
@@ -800,9 +864,12 @@
       }
 
       .services-grid,
-      .steps,
-      .reviews {
+      .steps {
         grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .review-card {
+        width: 330px;
       }
 
       .steps::before,
@@ -859,9 +926,23 @@
       .hero-stats,
       .services-grid,
       .steps,
-      .reviews,
       .form-grid {
         grid-template-columns: 1fr;
+      }
+
+      .review-marquee {
+        mask-image: none;
+      }
+
+      .review-marquee::before,
+      .review-marquee::after {
+        display: none;
+      }
+
+      .review-card {
+        width: min(82vw, 320px);
+        min-height: 260px;
+        padding: 20px;
       }
 
       .stat {
@@ -1093,31 +1174,137 @@
         <h2>主人放心，宠物愿意再来</h2>
         <p>真实门店体验里，温柔和专业一样重要。</p>
       </div>
-      <div class="reviews">
-        <article class="review-card">
-          <div class="stars">★★★★★</div>
-          <p>我家猫特别怕吹风，这次没有强行赶进度，分了好几段慢慢吹，回家状态也很放松。</p>
-          <div class="reviewer">
-            <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=200&q=80" alt="用户头像">
-            <span>橘子妈妈</span>
-          </div>
-        </article>
-        <article class="review-card">
-          <div class="stars">★★★★★</div>
-          <p>比熊剪得很圆，脚底毛也处理得干净。美容师会讲哪里容易打结，下次知道怎么梳了。</p>
-          <div class="reviewer">
-            <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=200&q=80" alt="用户头像">
-            <span>豆包爸爸</span>
-          </div>
-        </article>
-        <article class="review-card">
-          <div class="stars">★★★★★</div>
-          <p>店里没有刺鼻香味，接送也准时。洗完拍了好多照片，老人家在家看着也安心。</p>
-          <div class="reviewer">
-            <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=200&q=80" alt="用户头像">
-            <span>栗子家</span>
-          </div>
-        </article>
+      <div class="review-marquee" aria-label="用户评价滚动播放">
+        <div class="review-track">
+          <article class="review-card">
+            <div class="stars">★★★★★</div>
+            <p>我家猫特别怕吹风，这次没有强行赶进度，分了好几段慢慢吹，回家状态也很放松。</p>
+            <div class="reviewer">
+              <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=200&q=80" alt="用户头像">
+              <span>橘子妈妈<small>短毛猫 · 基础洗护</small></span>
+            </div>
+          </article>
+          <article class="review-card">
+            <div class="stars">★★★★★</div>
+            <p>比熊剪得很圆，脚底毛也处理得干净。美容师会讲哪里容易打结，下次知道怎么梳了。</p>
+            <div class="reviewer">
+              <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=200&q=80" alt="用户头像">
+              <span>豆包爸爸<small>比熊 · 精修造型</small></span>
+            </div>
+          </article>
+          <article class="review-card">
+            <div class="stars">★★★★★</div>
+            <p>店里没有刺鼻香味，接送也准时。洗完拍了好多照片，老人家在家看着也安心。</p>
+            <div class="reviewer">
+              <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=200&q=80" alt="用户头像">
+              <span>栗子家<small>柯基 · 接送洗护</small></span>
+            </div>
+          </article>
+          <article class="review-card">
+            <div class="stars">★★★★★</div>
+            <p>第一次带流浪猫洗澡，本来很担心应激。美容师一直轻声安抚，还把耳朵情况拍给我看。</p>
+            <div class="reviewer">
+              <img src="https://images.unsplash.com/photo-1544723795-3fb6469f5b39?auto=format&fit=crop&w=200&q=80" alt="用户头像">
+              <span>年糕姐姐<small>长毛猫 · 温和护理</small></span>
+            </div>
+          </article>
+          <article class="review-card">
+            <div class="stars">★★★★★</div>
+            <p>我家金毛换毛季太夸张，做完深度除毛后车里和家里都清爽很多，毛也蓬蓬亮亮的。</p>
+            <div class="reviewer">
+              <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80" alt="用户头像">
+              <span>可乐妈妈<small>金毛 · 深度除毛</small></span>
+            </div>
+          </article>
+          <article class="review-card">
+            <div class="stars">★★★★★</div>
+            <p>预约前先问了皮肤敏感和用药情况，洗完还有护理记录，不是只把宠物洗香那么简单。</p>
+            <div class="reviewer">
+              <img src="https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=200&q=80" alt="用户头像">
+              <span>布丁家<small>法斗 · 皮毛 SPA</small></span>
+            </div>
+          </article>
+          <article class="review-card">
+            <div class="stars">★★★★★</div>
+            <p>小狗胆子很小，以前洗完会躲起来。这次回家愿意吃零食，能看出来过程真的被照顾到了。</p>
+            <div class="reviewer">
+              <img src="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=200&q=80" alt="用户头像">
+              <span>糯米爸爸<small>小型犬 · 低噪吹干</small></span>
+            </div>
+          </article>
+          <article class="review-card">
+            <div class="stars">★★★★★</div>
+            <p>剪毛前会先确认想保留的长度，修完不是模板感，眼睛周围和脚边都处理得很细。</p>
+            <div class="reviewer">
+              <img src="https://images.unsplash.com/photo-1527980965255-d3b416303d12?auto=format&fit=crop&w=200&q=80" alt="用户头像">
+              <span>泡芙妈妈<small>泰迪 · 造型美容</small></span>
+            </div>
+          </article>
+          <article class="review-card" aria-hidden="true">
+            <div class="stars">★★★★★</div>
+            <p>我家猫特别怕吹风，这次没有强行赶进度，分了好几段慢慢吹，回家状态也很放松。</p>
+            <div class="reviewer">
+              <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=200&q=80" alt="">
+              <span>橘子妈妈<small>短毛猫 · 基础洗护</small></span>
+            </div>
+          </article>
+          <article class="review-card" aria-hidden="true">
+            <div class="stars">★★★★★</div>
+            <p>比熊剪得很圆，脚底毛也处理得干净。美容师会讲哪里容易打结，下次知道怎么梳了。</p>
+            <div class="reviewer">
+              <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=200&q=80" alt="">
+              <span>豆包爸爸<small>比熊 · 精修造型</small></span>
+            </div>
+          </article>
+          <article class="review-card" aria-hidden="true">
+            <div class="stars">★★★★★</div>
+            <p>店里没有刺鼻香味，接送也准时。洗完拍了好多照片，老人家在家看着也安心。</p>
+            <div class="reviewer">
+              <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=200&q=80" alt="">
+              <span>栗子家<small>柯基 · 接送洗护</small></span>
+            </div>
+          </article>
+          <article class="review-card" aria-hidden="true">
+            <div class="stars">★★★★★</div>
+            <p>第一次带流浪猫洗澡，本来很担心应激。美容师一直轻声安抚，还把耳朵情况拍给我看。</p>
+            <div class="reviewer">
+              <img src="https://images.unsplash.com/photo-1544723795-3fb6469f5b39?auto=format&fit=crop&w=200&q=80" alt="">
+              <span>年糕姐姐<small>长毛猫 · 温和护理</small></span>
+            </div>
+          </article>
+          <article class="review-card" aria-hidden="true">
+            <div class="stars">★★★★★</div>
+            <p>我家金毛换毛季太夸张，做完深度除毛后车里和家里都清爽很多，毛也蓬蓬亮亮的。</p>
+            <div class="reviewer">
+              <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80" alt="">
+              <span>可乐妈妈<small>金毛 · 深度除毛</small></span>
+            </div>
+          </article>
+          <article class="review-card" aria-hidden="true">
+            <div class="stars">★★★★★</div>
+            <p>预约前先问了皮肤敏感和用药情况，洗完还有护理记录，不是只把宠物洗香那么简单。</p>
+            <div class="reviewer">
+              <img src="https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=200&q=80" alt="">
+              <span>布丁家<small>法斗 · 皮毛 SPA</small></span>
+            </div>
+          </article>
+          <article class="review-card" aria-hidden="true">
+            <div class="stars">★★★★★</div>
+            <p>小狗胆子很小，以前洗完会躲起来。这次回家愿意吃零食，能看出来过程真的被照顾到了。</p>
+            <div class="reviewer">
+              <img src="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=200&q=80" alt="">
+              <span>糯米爸爸<small>小型犬 · 低噪吹干</small></span>
+            </div>
+          </article>
+          <article class="review-card" aria-hidden="true">
+            <div class="stars">★★★★★</div>
+            <p>剪毛前会先确认想保留的长度，修完不是模板感，眼睛周围和脚边都处理得很细。</p>
+            <div class="reviewer">
+              <img src="https://images.unsplash.com/photo-1527980965255-d3b416303d12?auto=format&fit=crop&w=200&q=80" alt="">
+              <span>泡芙妈妈<small>泰迪 · 造型美容</small></span>
+            </div>
+          </article>
+        </div>
       </div>
     </section>
 
